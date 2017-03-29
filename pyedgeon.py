@@ -2,7 +2,7 @@ from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageOps
-from numpy import sqrt
+from math import sqrt
  
 # Primary user-editable settings
 ################################
@@ -18,9 +18,9 @@ background_color = (255, 255, 255)
 img_side = 1024
 charmax = 18
 font_size_guess = 7*(30-len(illusion_text))
-crop_width_x = 12
-crop_width_y = 3
-darkness_threshold = 108
+crop_width_x = 14
+crop_width_y = 5
+darkness_threshold = 114
  
 # Fail if sentence is too long (it looks ugly)
 if len(illusion_text) <= charmax:
