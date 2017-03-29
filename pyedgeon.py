@@ -20,7 +20,7 @@ charmax = 18
 font_size_guess = 7*(30-len(illusion_text))
 crop_width_x = 14
 crop_width_y = 5
-darkness_threshold = 114
+darkness_threshold = 116
  
 # Fail if sentence is too long (it looks ugly)
 if len(illusion_text) <= charmax:
