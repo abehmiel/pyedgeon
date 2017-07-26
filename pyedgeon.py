@@ -151,6 +151,16 @@ class pyedgeon():
         self.full_image.save(self.illusion_text+self.file_ext)
 
 
+    def create(self):
+        """ Perform all steps except initialization """
+        self.check_length()
+        self.draw_clear()
+        self.get_fontsize()
+        self.draw_frame()
+        self.stamp()
+        self.alpha_to_white()
+        self.save_img()
+
 def demo():
     demo = pyedgeon()
     demo.check_length()
