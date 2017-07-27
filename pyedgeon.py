@@ -22,14 +22,18 @@ class pyedgeon():
     charmax = 22,
     crop_width_x = 14,
     crop_width_y = 5,
-    darkness_threshold = 116
+    darkness_threshold = 116,
+    upper_case = True
     ):
 
         """       
         Default user-editable settings
         """
 
-        self.illusion_text = illusion_text.upper()
+        if upper_case:
+            self.illusion_text = illusion_text.upper()
+        else:
+            self.illusion_text = illusion_text
         self.font_path = font_path
         self.num_rotations = num_rotations
         self.file_ext = file_ext
