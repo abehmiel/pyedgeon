@@ -37,7 +37,7 @@ class pyedgeon():
         self.background_color = background_color
         self.img_side = img_side
         self.charmax = charmax
-        self.font_size_guess = 7*(30-len(self.illusion_text))
+        self.font_size_guess = None
         self.crop_width_x = crop_width_x
         self.crop_width_y = crop_width_y
         self.darkness_threshold = darkness_threshold
@@ -83,13 +83,14 @@ class pyedgeon():
             elif s in 'BSPEAKVXY&UwNRCHD': size += 112
             elif s in 'QGOMm%W@': size += 135
             else: size += 50
-        return size * 6 / 1000.0
+        milinches = size * 6 / 1000.0
+        self.font_size_guess = int(280 - 18.7*milinches)
 
     def get_fontsize(self):
         
         """step through font sizes to find optimal font for box"""
 
-        for font_trial in range(self.font_size_guess-56, self.font_size_guess+96):
+        for font_trial in range(self.font_size_guess-30, self.font_size_guess+30):
             possible_font = ImageFont.truetype(self.font_path, font_trial)
             raw_img = Image.new("RGB", self.img_size_text, self.background_color)
             draw = ImageDraw.Draw(raw_img)
@@ -177,6 +178,7 @@ class pyedgeon():
     def create(self):
         """ Perform all steps except initialization """
         self.check_length()
+        self.estimate_font_size()
         self.draw_clear()
         self.get_fontsize()
         self.draw_frame()
@@ -187,6 +189,7 @@ class pyedgeon():
 def demo():
     demo = pyedgeon()
     demo.check_length()
+    demo.estimate_font_size()
     demo.draw_clear()
     demo.get_fontsize()
     demo.draw_frame()
