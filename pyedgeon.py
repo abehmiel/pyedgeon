@@ -3,7 +3,8 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageOps
 from math import sqrt
- 
+from string import digits
+
 class pyedgeon():
 
     """
@@ -18,7 +19,7 @@ class pyedgeon():
     text_color = (0, 0, 0),
     background_color = (255, 255, 255),
     img_side = 1024,
-    charmax = 20,
+    charmax = 22,
     crop_width_x = 14,
     crop_width_y = 5,
     darkness_threshold = 116
@@ -28,7 +29,7 @@ class pyedgeon():
         Default user-editable settings
         """
 
-        self.illusion_text = illusion_text
+        self.illusion_text = illusion_text.upper()
         self.font_path = font_path
         self.num_rotations = num_rotations
         self.file_ext = file_ext
@@ -65,13 +66,30 @@ class pyedgeon():
         self.circle_img = Image.new("RGBA", self.img_size, self.background_color)
         self.full_image = Image.new("RGBA", self.img_size, self.background_color)
         self.draw = ImageDraw.Draw(self.raw_img)
- 
+
+    def estimate_font_size(self):
+        """TODO: Docstring for estimate_font_size.
+        :returns: TODO
+
+        """
+        
+        size = 0 # in milinches
+        for s in self.illusion_text:
+            if s in 'lij|\' ': size += 37
+            elif s in '![]fI.,:;/\\t': size += 50
+            elif s in '`-(){}r"': size += 60
+            elif s in '*^zcsJkvxy': size += 85
+            elif s in 'aebdhnopqug#$L+<>=?_~FZT' + digits: size += 95
+            elif s in 'BSPEAKVXY&UwNRCHD': size += 112
+            elif s in 'QGOMm%W@': size += 135
+            else: size += 50
+        return size * 6 / 1000.0
 
     def get_fontsize(self):
         
         """step through font sizes to find optimal font for box"""
 
-        for font_trial in range(self.font_size_guess-30, self.font_size_guess+30):
+        for font_trial in range(self.font_size_guess-56, self.font_size_guess+96):
             possible_font = ImageFont.truetype(self.font_path, font_trial)
             raw_img = Image.new("RGB", self.img_size_text, self.background_color)
             draw = ImageDraw.Draw(raw_img)
@@ -86,12 +104,17 @@ class pyedgeon():
             if possible_boundingbox[2] - possible_boundingbox[0] < self.img_side-2*self.crop_width_x:
                 boundingbox = possible_boundingbox
                 font_size = font_trial
-                self.font = ImageFont.truetype(self.font_path, font_size)
             else:
                 self.font_size = font_size
+                self.font = ImageFont.truetype(self.font_path, self.font_size)
                 self.boundingbox = boundingbox
                 return font_size, boundingbox
 
+    def getfontsize2(self):
+        """ step through font sizes using PIL's getsize method
+
+        """
+        pass 
 
     def draw_frame(self):
 
