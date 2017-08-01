@@ -1,7 +1,7 @@
 # pyedgeon
 Simple class to generate circular images that read a short phrase when held at eye level, nearly edge-on. PIL is used for image processing.
 
-The script has basic functionality and some user-editable settings like choosing the path to the font file, size of the output image, and what words to write. 
+The code has basic functionality and some user-editable settings like choosing the path to the font file, size of the output image, and what words to write. 
 
 It's a lot easier to view the generated images on a mobile or tablet where you can freely orient the device in space.  After running the script, you should obtain an image like this:
 
@@ -10,7 +10,9 @@ It's a lot easier to view the generated images on a mobile or tablet where you c
 ## Usage
 
 `from pyedgeon import pyedgeon`
+
 `test = pyedgeon(illusion_text="hello world")`
+
 `test.create()`
 
 full list of options with defaults:
