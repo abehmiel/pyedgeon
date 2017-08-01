@@ -5,7 +5,7 @@ from PIL import ImageOps
 from math import sqrt
 from string import digits
 
-class pyedgeon():
+class Pyedgeon():
 
     """
     Creates a pyedgeon object
@@ -23,6 +23,7 @@ class pyedgeon():
     crop_width_x = 14,
     crop_width_y = 5,
     darkness_threshold = 116,
+    filepath = "",
     upper_case = True
     ):
 
@@ -41,6 +42,7 @@ class pyedgeon():
         self.background_color = background_color
         self.img_side = img_side
         self.charmax = charmax
+        self.filepath = filepath
         self.font_size_guess = None
         self.crop_width_x = crop_width_x
         self.crop_width_y = crop_width_y
@@ -173,11 +175,13 @@ class pyedgeon():
                 if pixdata[x, y] == self.background_color + (0,):
                     pixdata[x, y] = self.background_color (255, )
 
-
     def save_img(self):
         """ Save as png """
-        self.full_image.save(self.illusion_text+self.file_ext)
+        self.full_image.save(self.get_file_path())
 
+    def get_file_path(self):
+        """ return relative file location """
+        return self.filepath+'/'+self.illusion_text+self.file_ext
 
     def create(self):
         """ Perform all steps except initialization """
