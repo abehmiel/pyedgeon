@@ -181,7 +181,7 @@ class Pyedgeon():
 
     def get_file_path(self):
         """ return relative file location """
-        return self.filepath+'/'+self.illusion_text+self.file_ext
+        return self.filepath+self.illusion_text+self.file_ext
 
     def create(self):
         """ Perform all steps except initialization """
@@ -195,7 +195,7 @@ class Pyedgeon():
         self.save_img()
 
 def demo():
-    demo = pyedgeon()
+    demo = Pyedgeon()
     demo.check_length()
     demo.estimate_font_size()
     demo.draw_clear()
