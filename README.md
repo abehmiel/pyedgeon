@@ -9,15 +9,15 @@ It's a lot easier to view the generated images on a mobile or tablet where you c
 
 ## Usage
 
-`from pyedgeon import pyedgeon`
+`from pyedgeon import Pyedgeon`
 
-`test = pyedgeon(illusion_text="hello world")`
+`test = Pyedgeon(illusion_text="hello world")`
 
 `test.create()`
 
 full list of options with defaults:
 
-`test = pyedgeon(illusion_text="hello world", font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-ExtraLight.ttf", num_rotations = 6, file_ext = ".png", text_color = (0, 0, 0), background_color = (255, 255, 255), img_side = 1024, charmax = 22, crop_width_x = 14, crop_width_y = 15, darkness_threshold = 116, upper_case = True)`
+`test = Pyedgeon(illusion_text="hello world", font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-ExtraLight.ttf", num_rotations = 6, file_ext = ".png", text_color = (0, 0, 0), background_color = (255, 255, 255), img_side = 1024, charmax = 22, crop_width_x = 14, crop_width_y = 15, darkness_threshold = 116, upper_case = True)`
 
 illusion_text: Text in the button. Will be automatically casted to upper-case by default.
 
