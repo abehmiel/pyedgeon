@@ -1,1 +1,1 @@
-from pyedgeon import Pyedgeon,
+from pyedgeon import Pyedgeon
