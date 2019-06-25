@@ -9,7 +9,7 @@ It's a lot easier to view the generated images on a mobile or tablet where you c
 
 ## Usage
 
-`from pyedgeon import Pyedgeon`
+`from pyedgeon.pyedgeon import Pyedgeon`
 
 `test = Pyedgeon(illusion_text="hello world")`
 
