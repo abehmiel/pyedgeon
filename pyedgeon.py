@@ -11,9 +11,9 @@ class Pyedgeon():
     Creates a pyedgeon object
     """
 
-    def __init__(self, 
+    def __init__(self,
     illusion_text = "HELLO WORLD",
-    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-ExtraLight.ttf",
+    font_path = "DejaVuSans-ExtraLight.ttf",
     num_rotations = 6,
     file_ext = ".png",
     text_color = (0, 0, 0),
@@ -27,7 +27,7 @@ class Pyedgeon():
     upper_case = True
     ):
 
-        """       
+        """
         Default user-editable settings
         """
 
@@ -61,12 +61,12 @@ class Pyedgeon():
         else:
             print('WARNING: Text too long. Truncating')
             self.illusion_text = self.illusion_text[0:20]
- 
+
 
     def draw_clear(self):
 
-        """Create raw image"""        
- 
+        """Create raw image"""
+
         self.raw_img = Image.new("RGB", self.img_size_text, self.background_color)
         self.img = Image.new("RGBA", self.img_size, self.background_color)
         self.circle_img = Image.new("RGBA", self.img_size, self.background_color)
@@ -74,11 +74,10 @@ class Pyedgeon():
         self.draw = ImageDraw.Draw(self.raw_img)
 
     def estimate_font_size(self):
-        """TODO: Docstring for estimate_font_size.
-        :returns: TODO
-
         """
-        
+        Rule-based method for arriving at an 'ok' guess for the font size
+        """
+
         size = 0 # in milinches
         for s in self.illusion_text:
             if s in 'lij|\' ': size += 37
@@ -93,7 +92,7 @@ class Pyedgeon():
         self.font_size_guess = int(280 - 18.7*milinches)
 
     def get_fontsize(self):
-        
+
         """step through font sizes to find optimal font for box"""
 
         for font_trial in range(self.font_size_guess-30, self.font_size_guess+30):
@@ -101,7 +100,7 @@ class Pyedgeon():
             raw_img = Image.new("RGB", self.img_size_text, self.background_color)
             draw = ImageDraw.Draw(raw_img)
             draw.text((self.crop_width_x, self.crop_width_y), self.illusion_text, self.text_color, font=possible_font)
- 
+
             # find bounding box of text by inversion
             inverted = ImageOps.invert(raw_img)
             possible_boundingbox = (inverted.getbbox()[0] - self.crop_width_x, \
@@ -121,7 +120,7 @@ class Pyedgeon():
         """ step through font sizes using PIL's getsize method
 
         """
-        pass 
+        pass
 
     def draw_frame(self):
 
@@ -133,7 +132,7 @@ class Pyedgeon():
         self.raw_img = self.raw_img.crop(self.boundingbox)
         self.scaled_img = self.raw_img.resize((self.img_side, self.img_side), Image.BICUBIC)
         self.img.paste(self.scaled_img, (0, 0))
- 
+
         # map points in the square image to points in a circle
         # turn light grey and white to alpha channel. Blacken dark grays.
         pixdata = self.img.load()
@@ -145,10 +144,10 @@ class Pyedgeon():
                     pixdata[x, y] = self.background_color + (0,)
                 elif pixdata[x, y][1] <= self.darkness_threshold:
                     pixdata[x, y] = self.text_color + (255,)
-         
+
         self.circle_img.paste(self.img, (0, 0))
         pixdata2 = self.circle_img.load()
-        
+
         # Stretch text vertically along the path of a circle
         for x in range(self.img_side):
             Ysize = 2 * sqrt((self.img_side / 2) ** 2 - (x - (self.img_side / 2)) ** 2)
@@ -158,7 +157,7 @@ class Pyedgeon():
                 pixdata2[x, Y] = pixdata[x, y]
                 if sqrt((x-self.img_side/2)**2 + (y-self.img_side/2)**2) >= self.img_side/2 - 2:
                     pixdata2[x, y] = self.background_color + (0,)
-        
+
 
     def stamp(self):
         """ Stamp text repeatedly in a circular manner """
