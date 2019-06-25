@@ -17,7 +17,7 @@ It's a lot easier to view the generated images on a mobile or tablet where you c
 
 full list of options with defaults:
 
-`test = Pyedgeon(illusion_text="hello world", font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-ExtraLight.ttf", num_rotations = 6, file_ext = ".png", text_color = (0, 0, 0), background_color = (255, 255, 255), img_side = 1024, charmax = 22, crop_width_x = 14, crop_width_y = 15, darkness_threshold = 116, upper_case = True)`
+`test = Pyedgeon(illusion_text="hello world", font_path = "DejaVuSans-ExtraLight.ttf", num_rotations = 6, file_ext = ".png", text_color = (0, 0, 0), background_color = (255, 255, 255), img_side = 1024, charmax = 22, crop_width_x = 14, crop_width_y = 15, darkness_threshold = 116, upper_case = True)`
 
 illusion_text: Text in the button. Will be automatically casted to upper-case by default.
 
@@ -39,4 +39,14 @@ crop_width_y: Adjusts overlap of bounding box and image on the top and bottom ed
 
 darkness_threshold: Threshold for step function which transforms gray pixels to black or white during image creation.
 
+filepath: (use a forward slash to end the string) a folder location to save the file
+
 upper_case: set to False to use lower-case characters. 
+
+### Outputs
+
+The .create() method will save a file to the current working directory:
+
+- `self.filepath+self.illusion_text+self.file_ext`
+
+Meanwhile, `self.full_image` has the image in memory.
