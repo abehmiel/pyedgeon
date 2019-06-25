@@ -8,7 +8,7 @@ setup(
       author = 'Abraham Hmiel',
       author_email = 'abehmiel@gmail.com',
       url = 'https://github.com/abehmiel/pyedgeon',
-    download_url = 'https://github.com/abehmiel/pyedgeon/archive/0.2.tar.gz',
+    download_url = 'https://github.com/abehmiel/pyedgeon/archive/0.3.tar.gz',
       keywords = ['Optical Illusion', 'PIL', 'Graphics', 'Text'],
       install_requires=[
                         'pillow',
