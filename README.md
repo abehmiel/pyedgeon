@@ -7,6 +7,8 @@ It's a lot easier to view the generated images on a mobile or tablet where you c
 
 ![alt text](https://abehmiel.files.wordpress.com/2017/01/npr-cool-dad-rock.png?w=610 "See if you can read: 'NPR COOL DAD ROCK'")
 
+The solution to the above illusion is "NPR COOL DAD ROCK" ;)
+
 ## Usage
 
 Proudly now a pip package!
