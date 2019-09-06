@@ -12,20 +12,21 @@ class Pyedgeon():
     """
 
     def __init__(self,
-    illusion_text = "HELLO WORLD",
-    font_path = "DejaVuSans-ExtraLight.ttf",
-    num_rotations = 6,
-    file_ext = ".png",
-    text_color = (0, 0, 0),
-    background_color = (255, 255, 255),
-    img_side = 1024,
-    charmax = 22,
-    crop_width_x = 14,
-    crop_width_y = 5,
-    darkness_threshold = 116,
-    filepath = "",
-    upper_case = True
-    ):
+                 illusion_text = "HELLO WORLD",
+                 font_path = "DejaVuSans-ExtraLight.ttf",
+                 num_rotations = 6,
+                 file_ext = ".png",
+                 text_color = (0, 0, 0),
+                 background_color = (255, 255, 255),
+                 img_side = 1024,
+                 charmax = 22,
+                 crop_width_x = 14,
+                 crop_width_y = 5,
+                 darkness_threshold = 116,
+                 filename = illusion_text
+                 filepath = "",
+                 upper_case = True
+                 ):
 
         """
         Default user-editable settings
@@ -49,6 +50,7 @@ class Pyedgeon():
         self.darkness_threshold = darkness_threshold
         self.img_size = (self.img_side, self.img_side)
         self.img_size_text = (self.img_side, self.img_side)
+        self.filename = filename
         self.font_size = None
 
 
@@ -67,10 +69,18 @@ class Pyedgeon():
 
         """Create raw image"""
 
-        self.raw_img = Image.new("RGB", self.img_size_text, self.background_color)
-        self.img = Image.new("RGBA", self.img_size, self.background_color)
-        self.circle_img = Image.new("RGBA", self.img_size, self.background_color)
-        self.full_image = Image.new("RGBA", self.img_size, self.background_color)
+        self.raw_img = Image.new("RGB",
+                                 self.img_size_text,
+                                 self.background_color)
+        self.img = Image.new("RGBA",
+                             self.img_size,
+                             self.background_color)
+        self.circle_img = Image.new("RGBA",
+                                    self.img_size,
+                                    self.background_color)
+        self.full_image = Image.new("RGBA",
+                                    self.img_size,
+                                    self.background_color)
         self.draw = ImageDraw.Draw(self.raw_img)
 
     def estimate_font_size(self):
@@ -95,19 +105,26 @@ class Pyedgeon():
 
         """step through font sizes to find optimal font for box"""
 
-        for font_trial in range(self.font_size_guess-30, self.font_size_guess+30):
-            possible_font = ImageFont.truetype(self.font_path, font_trial)
-            raw_img = Image.new("RGB", self.img_size_text, self.background_color)
+        for font_trial in range(self.font_size_guess-30,
+                                self.font_size_guess+30):
+            possible_font = ImageFont.truetype(self.font_path,
+                                               font_trial)
+            raw_img = Image.new("RGB", self.img_size_text,
+                                self.background_color)
             draw = ImageDraw.Draw(raw_img)
-            draw.text((self.crop_width_x, self.crop_width_y), self.illusion_text, self.text_color, font=possible_font)
+            draw.text((self.crop_width_x, self.crop_width_y),
+                      self.illusion_text,
+                      self.text_color,
+                      font=possible_font)
 
             # find bounding box of text by inversion
             inverted = ImageOps.invert(raw_img)
-            possible_boundingbox = (inverted.getbbox()[0] - self.crop_width_x, \
-                                    inverted.getbbox()[1] - self.crop_width_y, \
-                                    inverted.getbbox()[2] + self.crop_width_x, \
+            possible_boundingbox = (inverted.getbbox()[0] - self.crop_width_x,
+                                    inverted.getbbox()[1] - self.crop_width_y,
+                                    inverted.getbbox()[2] + self.crop_width_x,
                                     inverted.getbbox()[3] + self.crop_width_y)
-            if possible_boundingbox[2] - possible_boundingbox[0] < self.img_side-2*self.crop_width_x:
+            if possible_boundingbox[2] - possible_boundingbox[0] < \
+                    self.img_side-2*self.crop_width_x:
                 boundingbox = possible_boundingbox
                 font_size = font_trial
             else:
@@ -116,21 +133,21 @@ class Pyedgeon():
                 self.boundingbox = boundingbox
                 return font_size, boundingbox
 
-    def getfontsize2(self):
-        """ step through font sizes using PIL's getsize method
-
-        """
-        pass
-
     def draw_frame(self):
 
         # Start drawing boxes
-        self.raw_img = Image.new("RGB", self.img_size_text, self.background_color)
+        self.raw_img = Image.new("RGB",
+                                 self.img_size_text,
+                                 self.background_color)
         draw = ImageDraw.Draw(self.raw_img)
-        draw.text((self.crop_width_x, self.crop_width_y), self.illusion_text, self.text_color, font=self.font)
+        draw.text((self.crop_width_x, self.crop_width_y),
+                  self.illusion_text,
+                  self.text_color,
+                  font=self.font)
         inverted = ImageOps.invert(self.raw_img)
         self.raw_img = self.raw_img.crop(self.boundingbox)
-        self.scaled_img = self.raw_img.resize((self.img_side, self.img_side), Image.BICUBIC)
+        self.scaled_img = self.raw_img.resize((self.img_side, self.img_side),
+                                              Image.BICUBIC)
         self.img.paste(self.scaled_img, (0, 0))
 
         # map points in the square image to points in a circle
@@ -150,12 +167,14 @@ class Pyedgeon():
 
         # Stretch text vertically along the path of a circle
         for x in range(self.img_side):
-            Ysize = 2 * sqrt((self.img_side / 2) ** 2 - (x - (self.img_side / 2)) ** 2)
+            Ysize = 2 * sqrt((self.img_side / 2) ** 2 - \
+                             (x - (self.img_side / 2)) ** 2)
             for y in range(self.img_side):
                 Yoffset = int((self.img_side-Ysize)/2.)
                 Y = Yoffset + int((Ysize/self.img_side)*y)
                 pixdata2[x, Y] = pixdata[x, y]
-                if sqrt((x-self.img_side/2)**2 + (y-self.img_side/2)**2) >= self.img_side/2 - 2:
+                if sqrt((x-self.img_side/2)**2 + (y-self.img_side/2)**2) >= \
+                        self.img_side/2 - 2:
                     pixdata2[x, y] = self.background_color + (0,)
 
 
@@ -180,7 +199,7 @@ class Pyedgeon():
 
     def get_file_path(self):
         """ return relative file location """
-        return self.filepath+self.illusion_text+self.file_ext
+        return self.filepath + self.filename + self.file_ext
 
     def create(self):
         """ Perform all steps except initialization """
@@ -194,15 +213,15 @@ class Pyedgeon():
         self.save_img()
 
 def demo():
-    demo = Pyedgeon()
-    demo.check_length()
-    demo.estimate_font_size()
-    demo.draw_clear()
-    demo.get_fontsize()
-    demo.draw_frame()
-    demo.stamp()
-    demo.alpha_to_white()
-    demo.save_img()
+    foo = Pyedgeon()
+    foo.check_length()
+    foo.estimate_font_size()
+    foo.draw_clear()
+    foo.get_fontsize()
+    foo.draw_frame()
+    foo.stamp()
+    foo.alpha_to_white()
+    foo.save_img()
 
 if __name__ == "__main__":
     demo()
