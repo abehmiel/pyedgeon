@@ -203,7 +203,15 @@ class Pyedgeon():
 
     def get_file_path(self):
         """ return relative file location """
-        return self.file_path + self.file_name + self.file_ext
+        if self.file_path == '':
+            p = Path.cwd()
+        else:
+            p = Path(self.file_path)
+
+        writefile = self.file_name + self.file_ext
+        handle = p / writefile
+        # workaround for https://github.com/python-pillow/Pillow/issues/1747
+        return str(handle)
 
     def create(self):
         """ Perform all steps except initialization """
