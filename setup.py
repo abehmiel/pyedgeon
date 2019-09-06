@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
       name = 'pyedgeon',
       packages = ['pyedgeon'],
-      version = 'v0.2.1',
+      version = 'v0.3',
       license='MIT',
       description = 'Create optical illusion buttons',
       author = 'Abraham Hmiel',
       author_email = 'abehmiel@gmail.com',
       url = 'https://github.com/abehmiel/pyedgeon',
-    download_url = 'https://github.com/abehmiel/pyedgeon/archive/v0.2.1.tar.gz',
+    download_url = 'https://github.com/abehmiel/pyedgeon/archive/v0.3.tar.gz',
       keywords = ['Optical Illusion', 'PIL', 'Graphics', 'Text'],
       install_requires=[
                         'pillow',
