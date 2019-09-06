@@ -23,7 +23,7 @@ class Pyedgeon():
                  crop_width_x = 14,
                  crop_width_y = 5,
                  darkness_threshold = 116,
-                 filename = illusion_text
+                 filename = None,
                  filepath = "",
                  upper_case = True
                  ):
@@ -50,7 +50,10 @@ class Pyedgeon():
         self.darkness_threshold = darkness_threshold
         self.img_size = (self.img_side, self.img_side)
         self.img_size_text = (self.img_side, self.img_side)
-        self.filename = filename
+        if filename is not None:
+            self.filename = filename
+        else:
+            self.filename = illusion_text
         self.font_size = None
 
 
