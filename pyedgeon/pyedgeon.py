@@ -4,6 +4,7 @@ from PIL import ImageDraw
 from PIL import ImageOps
 from math import sqrt
 from string import digits
+from pathlib import Path
 
 class Pyedgeon():
 
@@ -23,8 +24,8 @@ class Pyedgeon():
                  crop_width_x = 14,
                  crop_width_y = 5,
                  darkness_threshold = 116,
-                 filename = None,
-                 filepath = "",
+                 file_name = None,
+                 file_path = "",
                  upper_case = True
                  ):
 
@@ -43,17 +44,17 @@ class Pyedgeon():
         self.background_color = background_color
         self.img_side = img_side
         self.charmax = charmax
-        self.filepath = filepath
+        self.file_path = file_path
         self.font_size_guess = None
         self.crop_width_x = crop_width_x
         self.crop_width_y = crop_width_y
         self.darkness_threshold = darkness_threshold
         self.img_size = (self.img_side, self.img_side)
         self.img_size_text = (self.img_side, self.img_side)
-        if filename is not None:
-            self.filename = filename
+        if file_name is not None:
+            self.file_name = file_name
         else:
-            self.filename = illusion_text
+            self.file_name = illusion_text
         self.font_size = None
 
 
@@ -202,7 +203,7 @@ class Pyedgeon():
 
     def get_file_path(self):
         """ return relative file location """
-        return self.filepath + self.filename + self.file_ext
+        return self.file_path + self.file_name + self.file_ext
 
     def create(self):
         """ Perform all steps except initialization """
