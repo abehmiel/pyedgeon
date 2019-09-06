@@ -7,15 +7,23 @@ It's a lot easier to view the generated images on a mobile or tablet where you c
 
 ![alt text](https://abehmiel.files.wordpress.com/2017/01/npr-cool-dad-rock.png?w=610 "See if you can read: 'NPR COOL DAD ROCK'")
 
+The solution to the above illusion is "NPR COOL DAD ROCK" ;)
+
 ## Usage
 
-`from pyedgeon import Pyedgeon`
+Proudly now a pip package!
+
+`pip install pyedgeon`
+
+After downloding, include in a script
+
+`from pyedgeon.pyedgeon import Pyedgeon`
 
 `test = Pyedgeon(illusion_text="hello world")`
 
 `test.create()`
 
-full list of options with defaults:
+This will create a default image in the cwd. A full list of options with defaults follows:
 
 `test = Pyedgeon(illusion_text="hello world", font_path = "DejaVuSans-ExtraLight.ttf", num_rotations = 6, file_ext = ".png", text_color = (0, 0, 0), background_color = (255, 255, 255), img_side = 1024, charmax = 22, crop_width_x = 14, crop_width_y = 15, darkness_threshold = 116, upper_case = True)`
 
