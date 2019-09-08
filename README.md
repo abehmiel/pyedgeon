@@ -62,3 +62,5 @@ The .create() method will save a file to the location:
 - `self.filepath/self.file_name+self.file_ext`
 
 Meanwhile, `self.full_image` has the image in memory.
+
+#### Be sure to check out [pyedgeon-service](https://github.com/abehmiel/pyedgeon-service) for a fun app that uses this API! 
