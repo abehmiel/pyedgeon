@@ -111,7 +111,6 @@ class Pyedgeon():
         try:
             for i, font_trial in enumerate(range(self.font_size_guess-30,
                                 self.font_size_guess+30)):
-                print(font_trial)
                 possible_font = ImageFont.truetype(self.font_path,
                                                font_trial)
                 raw_img = Image.new("RGB", self.img_size_text,
