@@ -103,39 +103,57 @@ class Pyedgeon():
             elif s in 'QGOMm%W@': size += 135
             else: size += 50
         milinches = size * 6 / 1000.0
-        self.font_size_guess = int(280 - 18.7*milinches)
+        self.font_size_guess = min(max(int(280 - 18.7*milinches), 60), 220)
 
     def get_fontsize(self):
 
         """step through font sizes to find optimal font for box"""
-
-        for font_trial in range(self.font_size_guess-30,
-                                self.font_size_guess+30):
-            possible_font = ImageFont.truetype(self.font_path,
+        try:
+            for i, font_trial in enumerate(range(self.font_size_guess-30,
+                                self.font_size_guess+30)):
+                print(font_trial)
+                possible_font = ImageFont.truetype(self.font_path,
                                                font_trial)
-            raw_img = Image.new("RGB", self.img_size_text,
+                raw_img = Image.new("RGB", self.img_size_text,
                                 self.background_color)
-            draw = ImageDraw.Draw(raw_img)
-            draw.text((self.crop_width_x, self.crop_width_y),
+                draw = ImageDraw.Draw(raw_img)
+                draw.text((self.crop_width_x, self.crop_width_y),
                       self.illusion_text,
                       self.text_color,
                       font=possible_font)
 
-            # find bounding box of text by inversion
-            inverted = ImageOps.invert(raw_img)
-            possible_boundingbox = (inverted.getbbox()[0] - self.crop_width_x,
+                # find bounding box of text by inversion
+                inverted = ImageOps.invert(raw_img)
+                possible_boundingbox = (inverted.getbbox()[0] - self.crop_width_x,
                                     inverted.getbbox()[1] - self.crop_width_y,
                                     inverted.getbbox()[2] + self.crop_width_x,
                                     inverted.getbbox()[3] + self.crop_width_y)
-            if possible_boundingbox[2] - possible_boundingbox[0] < \
-                    self.img_side-2*self.crop_width_x:
-                boundingbox = possible_boundingbox
-                font_size = font_trial
-            else:
-                self.font_size = font_size
-                self.font = ImageFont.truetype(self.font_path, self.font_size)
-                self.boundingbox = boundingbox
-                return font_size, boundingbox
+                if possible_boundingbox[2] - possible_boundingbox[0] < \
+                    self.img_side-2*self.crop_width_x or i == 0:
+                    boundingbox = possible_boundingbox
+                    font_size = font_trial
+
+                # escape case, found a good font size (the last one)
+                elif i != 0:
+                    self.font_size = font_size
+                    self.font = ImageFont.truetype(self.font_path, self.font_size)
+                    self.boundingbox = boundingbox
+                    return font_size, boundingbox
+
+                # escape case, font size too high
+                if font_size > 350:
+                    self.font_size = font_size
+                    self.font = ImageFont.truetype(self.font_path, self.font_size)
+                    self.boundingbox = boundingbox
+                    return font_size, boundingbox
+
+            # finally, if no suitable font size is found, recur w smaller guess:
+            self.font_size_guess += 50
+            self.get_fontsize()
+
+        except:
+            self.font_size_guess += 50
+            self.get_fontsize()
 
     def draw_frame(self):
 
