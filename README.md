@@ -1,66 +1,240 @@
 # pyedgeon
-Simple class to generate circular images that read a short phrase when held at eye level, nearly edge-on. PIL is used for image processing.
 
-The code has basic functionality and some user-editable settings like choosing the path to the font file, size of the output image, and what words to write. 
+Create stunning optical illusion images with hidden text that appears when viewed at an angle!
 
-It's a lot easier to view the generated images on a mobile or tablet where you can freely orient the device in space.  After running the script, you should obtain an image like this:
+Pyedgeon is a Python library that generates circular images containing text that's hidden when viewed directly but becomes readable when the image is tilted and viewed nearly edge-on. This effect is created using circular anamorphic distortion - a mathematical transformation that compensates for perspective foreshortening.
 
 ![alt text](https://abehmiel.files.wordpress.com/2017/01/npr-cool-dad-rock.png?w=610 "See if you can read: 'NPR COOL DAD ROCK'")
 
 The solution to the above illusion is "NPR COOL DAD ROCK" ;)
 
-## Usage
+**Tip**: View generated images on a mobile device or tablet for the best experience - you can easily tilt the device to see the hidden message!
 
-Proudly now a pip package!
+## Quick Start
 
-`pip install pyedgeon`
+### Installation
 
-After downloding, include in a script
+Install via pip:
 
-`from pyedgeon import Pyedgeon`
+```bash
+pip install pyedgeon
+```
 
-`test = Pyedgeon(illusion_text="hello world")`
+### Font Requirements
 
-`test.create()`
+Pyedgeon requires a TrueType font (.ttf) or TrueType Collection (.ttc) to render text. **The library will automatically search for and use system fonts**, so in most cases you don't need to do anything!
 
-This will create a default image in the cwd. A full list of options with defaults follows:
+**Supported Platforms**:
+- ✅ **macOS**: Automatically finds Helvetica or Helvetica Neue
+- ✅ **Linux**: Automatically finds DejaVu Sans or Liberation Sans
+- ✅ **Windows**: Automatically finds Arial or Calibri
 
-`test = Pyedgeon(illusion_text="hello world", font_path = "DejaVuSans-ExtraLight.ttf", num_rotations = 6, file_path = "", file_name = None, file_ext = ".png", text_color = (0, 0, 0), background_color = (255, 255, 255), img_side = 1024, charmax = 22, crop_width_x = 14, crop_width_y = 15, darkness_threshold = 116, upper_case = True)`
+**If you want to use a specific font**, simply provide the `font_path` parameter:
 
-illusion_text: Text in the button. Will be automatically casted to upper-case by default.
+```python
+img = Pyedgeon(
+    illusion_text="HELLO",
+    font_path="/path/to/your/font.ttf"  # Use your preferred font
+)
+```
 
-num_rotations: The number of times the text will be stamped around the circle, at intervals of 180/num_rotations degrees.
+**Finding Fonts on Your System**:
+- **macOS**: `/System/Library/Fonts/` or `/Library/Fonts/`
+- **Linux**: `/usr/share/fonts/truetype/`
+- **Windows**: `C:\Windows\Fonts\`
 
-file_path: The path to write out the file
+### **Important Readability Note!**
 
-file_name: the filename before the extension of the utput file. Defaults to illusion_text
+When testing this package I've found better success with lighter fonts. Personally
+I think that pyedgeon buttons look best with the DejaVuSans-ExtraLight.ttf font (not distributed),
+but it's easy to find and install this font and specify the path to it in the API.
 
-file_ext: File format for output, in string, ".xyz" format 
+### Basic Usage
 
-text_color: 3-tuple of values 0:255 for controlling the text color
+#### Option 1: Quick-Start Script (Easiest!)
 
-background_color: 3-tuple of values 0:255 for controlling the background color
+The quickest way to create an image is using the included example script:
 
-img_side: Size of image in pixels, per side.
+```bash
+# Clone the repository
+git clone https://github.com/abehmiel/pyedgeon.git
+cd pyedgeon
 
-charmax: Maximum character limit. Works best when around 22 for many fonts, but may need to be changed if you are using uncommon or very narrow fonts.
+# Install dependencies
+make install
 
-crop_width_x: Adjusts overlap of bounding box and image on the left and right edges of text.
+# Create a default "HELLO WORLD" image
+make example
 
-crop_width_y: Adjusts overlap of bounding box and image on the top and bottom edges of text.
+# Or customize the message
+make example MESSAGE="SECRET TEXT"
+```
 
-darkness_threshold: Threshold for step function which transforms gray pixels to black or white during image creation.
+You can also run the script directly for more options:
 
-filepath: (use a forward slash to end the string) a folder location to save the file
+```bash
+# Basic usage
+python scripts/example.py
 
-upper_case: set to False to use mixed or lower-case characters. 
+# Custom message
+python scripts/example.py "YOUR MESSAGE"
 
-### Outputs
+# Specify custom font
+python scripts/example.py "YOUR MESSAGE" --font /path/to/font.ttf
 
-The .create() method will save a file to the location:
+# Custom output filename
+python scripts/example.py "YOUR MESSAGE" --output my_image.png
 
-- `self.filepath/self.file_name+self.file_ext`
+# See all options
+python scripts/example.py --help
+```
 
-Meanwhile, `self.full_image` has the image in memory.
+#### Option 2: Using as a Python Library
 
-#### Be sure to check out [pyedgeon-service](https://github.com/abehmiel/pyedgeon-service) for a fun app that uses this API! 
+```python
+from pyedgeon import Pyedgeon
+
+# Create an illusion image with default settings
+img = Pyedgeon(illusion_text="HELLO WORLD")
+img.create()
+# Creates: HELLO WORLD.png in current directory
+```
+
+That's it! The image will be saved in your current working directory.
+
+## Advanced Usage
+
+### Customization Options
+
+### Full Example
+
+```python
+from pyedgeon import Pyedgeon
+
+img = Pyedgeon(
+    illusion_text="CUSTOM TEXT",           # Text to display (auto-uppercase by default)
+    # font_path="/path/to/font.ttf",       # Optional: custom font (auto-detected if omitted)
+    num_rotations=6,                       # Number of text rotations (default: 6)
+    img_side=2048,                         # Image size in pixels (default: 1024)
+    text_color=(255, 0, 0),                # RGB color for text (default: black)
+    background_color=(255, 255, 255),      # RGB color for background (default: white)
+    file_path="/output/directory/",        # Output directory (default: current dir)
+    file_name="my_illusion",               # Output filename (default: illusion_text)
+    file_ext=".png",                       # File format (default: .png)
+    charmax=22,                            # Max characters (default: 22)
+    upper_case=True                        # Convert to uppercase (default: True)
+)
+img.create()
+```
+
+### Parameter Reference
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `illusion_text` | str | "HELLO WORLD" | Text to display in the illusion |
+| `font_path` | str | None | Path to TrueType font file (auto-detected if None) |
+| `num_rotations` | int | 6 | Number of text rotations around circle |
+| `img_side` | int | 1024 | Size of square image in pixels |
+| `text_color` | tuple | (0, 0, 0) | RGB color for text (0-255) |
+| `background_color` | tuple | (255, 255, 255) | RGB color for background (0-255) |
+| `file_path` | str | "" | Directory path for output (empty = current dir) |
+| `file_name` | str | None | Output filename without extension (None = use text) |
+| `file_ext` | str | ".png" | File format extension |
+| `charmax` | int | 22 | Maximum character limit |
+| `crop_width_x` | int | 14 | Horizontal padding for text bounding box |
+| `crop_width_y` | int | 5 | Vertical padding for text bounding box |
+| `darkness_threshold` | int | 116 | Threshold for black/white conversion (0-255) |
+| `upper_case` | bool | True | Automatically convert text to uppercase |
+
+For detailed parameter descriptions, see [API_REFERENCE.md](API_REFERENCE.md). 
+
+## Usage Tips
+
+### Viewing the Illusion
+
+1. **Mobile/Tablet**: Best viewing experience - tilt device to nearly edge-on
+2. **Desktop**: Hold screen at eye level and view from an extreme angle
+3. **Print**: Works great on physical prints - hold at eye level and tilt
+
+### Best Practices
+
+- **Text Length**: Keep text between 15-22 characters for best results
+- **Font Choice**: Extra-light or light weight fonts work best
+- **Colors**: High contrast between text and background recommended
+- **Image Size**: Use 1024 for web display, 2048+ for printing
+- **Rotations**: 6-8 rotations provide good visibility from multiple angles
+
+## Accessing the Image Object
+
+The generated image is available in memory after creation:
+
+```python
+img = Pyedgeon(illusion_text="HELLO")
+img.create()
+
+# Access the PIL Image object
+pil_image = img.full_image
+
+# Perform additional operations
+pil_image.show()           # Display in image viewer
+pil_image.resize((512, 512))  # Resize
+pil_image.save("copy.png")    # Save additional copy
+```
+
+## Documentation
+
+Comprehensive documentation is available:
+
+- **[API_REFERENCE.md](API_REFERENCE.md)** - Detailed API documentation with examples
+- **[CLAUDE.md](CLAUDE.md)** - Developer documentation, architecture, and algorithms
+- **[SECURITY.md](SECURITY.md)** - Security guidelines for safe usage
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guide for contributors
+- **[DOCSTRING_EXAMPLES.md](DOCSTRING_EXAMPLES.md)** - Enhanced docstring examples
+
+## Known Issues
+
+This library has some known issues that are being addressed:
+
+1. **Syntax error on line 215** - Prevents successful image generation in current version
+2. **Path traversal vulnerability** - File paths are not validated (see SECURITY.md)
+3. **No input validation** - Parameters should be validated before use
+4. **Performance** - Pixel operations are not optimized (improvements planned)
+
+See [CLAUDE.md](CLAUDE.md) for detailed issue descriptions and planned improvements.
+
+## Security Considerations
+
+**Important**: When using Pyedgeon with untrusted input (e.g., web applications):
+
+- Validate and sanitize all file paths
+- Enforce resource limits (memory, CPU time)
+- Use whitelisted fonts only
+- Validate input parameters
+
+See [SECURITY.md](SECURITY.md) for comprehensive security guidelines and safe usage patterns.
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+
+- Development setup
+- Code guidelines
+- Testing requirements
+- Pull request process
+- Priority areas for contribution
+
+## Related Projects
+
+**[pyedgeon-service](https://github.com/abehmiel/pyedgeon-service)** - A web service that uses this API to generate illusions online!
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Author
+
+Abraham Hmiel (abehmiel@gmail.com)
+
+## Acknowledgments
+
+Special thanks to all contributors and users of this library! 

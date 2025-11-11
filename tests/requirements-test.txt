@@ -1,0 +1,27 @@
+# Testing dependencies for pyedgeon
+
+# Core testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-xdist>=3.0.0  # For parallel test execution
+pytest-timeout>=2.1.0  # For timeout handling
+pytest-benchmark>=4.0.0  # For performance benchmarks
+
+# Code quality and coverage
+coverage>=7.0.0
+
+# Image testing and validation
+pillow>=9.0.0  # Should match main dependency
+
+# Mocking and fixtures
+pytest-mock>=3.10.0
+
+# Testing utilities
+pytest-html>=3.1.0  # HTML test reports
+pytest-json-report>=1.5.0  # JSON test reports
+
+# Security testing
+safety>=2.3.0  # Dependency vulnerability scanning
+
+# Additional utilities
+colorama>=0.4.6  # Colored terminal output
