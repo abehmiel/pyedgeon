@@ -191,28 +191,6 @@ Comprehensive documentation is available:
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guide for contributors
 - **[DOCSTRING_EXAMPLES.md](DOCSTRING_EXAMPLES.md)** - Enhanced docstring examples
 
-## Known Issues
-
-This library has some known issues that are being addressed:
-
-1. **Syntax error on line 215** - Prevents successful image generation in current version
-2. **Path traversal vulnerability** - File paths are not validated (see SECURITY.md)
-3. **No input validation** - Parameters should be validated before use
-4. **Performance** - Pixel operations are not optimized (improvements planned)
-
-See [CLAUDE.md](CLAUDE.md) for detailed issue descriptions and planned improvements.
-
-## Security Considerations
-
-**Important**: When using Pyedgeon with untrusted input (e.g., web applications):
-
-- Validate and sanitize all file paths
-- Enforce resource limits (memory, CPU time)
-- Use whitelisted fonts only
-- Validate input parameters
-
-See [SECURITY.md](SECURITY.md) for comprehensive security guidelines and safe usage patterns.
-
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
