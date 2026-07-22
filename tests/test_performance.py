@@ -118,8 +118,14 @@ class TestPerformanceBenchmarks:
 class TestScalability:
     """Test performance scaling with different parameters."""
 
+    @pytest.mark.slow
     def test_scaling_with_text_length(self, font_path, temp_dir):
-        """Test performance scaling with text length."""
+        """Test performance scaling with text length.
+
+        Marked slow: this is a wall-clock ratio benchmark. Baselines here sit at
+        the clock-resolution/jitter floor on shared CI runners, so it runs only
+        in the full (single-OS) suite, not the multi-OS fast matrix.
+        """
         text_lengths = [5, 10, 15, 20]
         times = []
 
@@ -169,8 +175,14 @@ class TestScalability:
         for t in times:
             assert t < 5.0, f"Image creation took {t:.2f}s, too slow"
 
+    @pytest.mark.slow
     def test_scaling_with_num_rotations(self, font_path, temp_dir):
-        """Test performance scaling with number of rotations."""
+        """Test performance scaling with number of rotations.
+
+        Marked slow: wall-clock ratio benchmark with a sub-millisecond baseline,
+        which is dominated by scheduler jitter on shared CI runners. Runs in the
+        full (single-OS) suite, not the multi-OS fast matrix.
+        """
         rotation_counts = [2, 4, 6, 8]
         times = []
 
