@@ -118,8 +118,14 @@ class TestPerformanceBenchmarks:
 class TestScalability:
     """Test performance scaling with different parameters."""
 
+    @pytest.mark.slow
     def test_scaling_with_text_length(self, font_path, temp_dir):
-        """Test performance scaling with text length."""
+        """Test performance scaling with text length.
+
+        Marked slow: this is a wall-clock ratio benchmark. Baselines here sit at
+        the clock-resolution/jitter floor on shared CI runners, so it runs only
+        in the full (single-OS) suite, not the multi-OS fast matrix.
+        """
         text_lengths = [5, 10, 15, 20]
         times = []
 
@@ -132,15 +138,18 @@ class TestScalability:
                 img_side=256
             )
 
-            start = time.time()
+            start = time.perf_counter()
             p.estimate_font_size()
-            elapsed = time.time() - start
+            elapsed = time.perf_counter() - start
 
             times.append(elapsed)
 
-        # Font size estimation should scale roughly linearly
-        # Verify it doesn't explode exponentially
-        assert times[-1] < times[0] * 10, "Performance degradation too severe"
+        # Font size estimation should scale roughly linearly; verify it doesn't
+        # explode exponentially. Floor the baseline: estimate_font_size() is fast
+        # enough that timings approach the clock resolution (time.time() reads
+        # 0.0 on Windows), which would make the ratio meaningless.
+        baseline = max(times[0], 1e-4)
+        assert times[-1] < baseline * 10, "Performance degradation too severe"
 
     def test_scaling_with_image_size(self, font_path, temp_dir):
         """Test performance scaling with image size."""
@@ -166,8 +175,14 @@ class TestScalability:
         for t in times:
             assert t < 5.0, f"Image creation took {t:.2f}s, too slow"
 
+    @pytest.mark.slow
     def test_scaling_with_num_rotations(self, font_path, temp_dir):
-        """Test performance scaling with number of rotations."""
+        """Test performance scaling with number of rotations.
+
+        Marked slow: wall-clock ratio benchmark with a sub-millisecond baseline,
+        which is dominated by scheduler jitter on shared CI runners. Runs in the
+        full (single-OS) suite, not the multi-OS fast matrix.
+        """
         rotation_counts = [2, 4, 6, 8]
         times = []
 
@@ -185,14 +200,17 @@ class TestScalability:
             p.get_fontsize()
             p.draw_frame()
 
-            start = time.time()
+            start = time.perf_counter()
             p.stamp()
-            elapsed = time.time() - start
+            elapsed = time.perf_counter() - start
 
             times.append(elapsed)
 
-        # Stamping should scale linearly with rotations
-        assert times[-1] < times[0] * (rotation_counts[-1] / rotation_counts[0]) * 2
+        # Stamping should scale linearly with rotations. Floor the baseline:
+        # stamp() can finish below the clock resolution (time.time() reads 0.0 on
+        # Windows), collapsing the RHS to 0 and failing spuriously.
+        baseline = max(times[0], 1e-4)
+        assert times[-1] < baseline * (rotation_counts[-1] / rotation_counts[0]) * 2
 
 
 class TestNestedLoopPerformance:

@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "pyedgeon"
-version = "0.4.0"
+version = "0.5.0"
 description = "Create optical illusion buttons using PIL/Pillow"
 authors = ["Abraham Hmiel <abehmiel@gmail.com>"]
 license = "MIT"
@@ -18,8 +18,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -29,8 +27,9 @@ classifiers = [
 packages = [{include = "pyedgeon"}]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-pillow = "^10.0.0"
+python = "^3.10"
+pillow = "^12.3.0"
+numpy = "^1.24.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
@@ -41,10 +40,6 @@ ruff = "^0.1.0"
 black = "^23.0.0"
 isort = "^5.12.0"
 pre-commit = "^3.3.0"
-
-[tool.poetry.group.optimization.dependencies]
-# Optional: For performance optimizations (requires Python 3.9+)
-numpy = {version = "^1.24.0", python = "^3.9"}
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^7.0.0"
@@ -91,7 +86,7 @@ exclude_lines = [
 
 # MyPy configuration
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false  # Set to true once type hints are added
@@ -105,7 +100,7 @@ check_untyped_defs = true
 # Ruff configuration (replaces flake8, isort, and more)
 [tool.ruff]
 line-length = 100
-target-version = "py38"
+target-version = "py310"
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -130,7 +125,7 @@ ignore = [
 # Black configuration
 [tool.black]
 line-length = 100
-target-version = ["py38", "py39", "py310", "py311", "py312"]
+target-version = ["py310", "py311", "py312"]
 include = '\.pyi?$'
 exclude = '''
 /(
