@@ -364,9 +364,11 @@ class TestGetFontsize:
 
         assert len(boundingbox) == 4
         assert all(isinstance(x, int) for x in boundingbox)
-        # Bounding box should be within image dimensions
-        assert 0 <= boundingbox[0] < p.img_side
-        assert 0 <= boundingbox[1] < p.img_side
+        # boundingbox = getbbox() offset by -crop_width, so the left/top edge can
+        # sit up to crop_width left/above origin depending on the font's side bearing
+        # (e.g. DejaVu on Linux yields -1). Upper bound stays within the image.
+        assert -p.crop_width_x <= boundingbox[0] < p.img_side
+        assert -p.crop_width_y <= boundingbox[1] < p.img_side
 
 
 class TestDrawFrame:
@@ -518,7 +520,10 @@ class TestGetFilePath:
 
         output_path = p.get_file_path()
 
-        assert temp_dir in output_path
+        # get_file_path() calls Path.resolve(), which canonicalizes 8.3 short
+        # names on Windows (RUNNER~1 -> runneradmin) and /var -> /private/var on
+        # macOS. Compare against the resolved temp_dir so the check is portable.
+        assert os.path.realpath(temp_dir) in output_path
         assert "test_file.png" in output_path
 
     def test_get_file_path_empty_path_uses_cwd(self, font_path):

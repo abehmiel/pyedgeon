@@ -132,15 +132,18 @@ class TestScalability:
                 img_side=256
             )
 
-            start = time.time()
+            start = time.perf_counter()
             p.estimate_font_size()
-            elapsed = time.time() - start
+            elapsed = time.perf_counter() - start
 
             times.append(elapsed)
 
-        # Font size estimation should scale roughly linearly
-        # Verify it doesn't explode exponentially
-        assert times[-1] < times[0] * 10, "Performance degradation too severe"
+        # Font size estimation should scale roughly linearly; verify it doesn't
+        # explode exponentially. Floor the baseline: estimate_font_size() is fast
+        # enough that timings approach the clock resolution (time.time() reads
+        # 0.0 on Windows), which would make the ratio meaningless.
+        baseline = max(times[0], 1e-4)
+        assert times[-1] < baseline * 10, "Performance degradation too severe"
 
     def test_scaling_with_image_size(self, font_path, temp_dir):
         """Test performance scaling with image size."""

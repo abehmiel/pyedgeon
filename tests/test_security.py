@@ -72,8 +72,10 @@ class TestPathTraversalPrevention:
             # Path separators and dots should be removed or replaced
             assert "../" not in output_path
             assert "..\\" not in output_path
-            # Should still be within temp_dir
-            assert temp_dir in output_path or output_path.startswith(temp_dir)
+            # Should still be within temp_dir (realpath resolves Windows 8.3
+            # short names and macOS /var -> /private/var so the compare is portable)
+            resolved_temp = os.path.realpath(temp_dir)
+            assert resolved_temp in output_path or output_path.startswith(resolved_temp)
 
     def test_font_path_traversal(self, temp_dir):
         """Test that font_path rejects paths with invalid extensions."""
@@ -332,10 +334,12 @@ class TestFileSystemSecurity:
             illusion_text="TEST"
         )
 
-        # Verify it would overwrite (without actually running create())
-        # Path may be resolved differently on macOS (/var vs /private/var)
+        # Verify it would overwrite (without actually running create()).
+        # get_file_path() resolves the path, so canonicalize the expected path
+        # too (Windows 8.3 short names, macOS /var -> /private/var).
         result_path = p.get_file_path()
-        assert str(file_path) in result_path or result_path in str(file_path)
+        resolved_file = os.path.realpath(str(file_path))
+        assert resolved_file == result_path
 
     def test_file_extension_validation(self, font_path, temp_dir):
         """Test that dangerous file extensions are properly rejected."""
@@ -380,8 +384,9 @@ class TestFileSystemSecurity:
             illusion_text="TEST"
         )
 
-        # Path may be resolved differently on different systems (e.g., /var vs /private/var on macOS)
-        assert fake_font_file in p.font_path or p.font_path in fake_font_file
+        # Both point to the same file; realpath canonicalizes them (Windows 8.3
+        # short names, macOS /var -> /private/var) so the compare is portable.
+        assert os.path.realpath(fake_font_file) == os.path.realpath(p.font_path)
 
 
 class TestErrorHandling:
