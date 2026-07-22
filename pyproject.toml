@@ -41,8 +41,8 @@ isort = "^5.12.0"
 pre-commit = "^3.3.0"
 
 [tool.poetry.group.optimization.dependencies]
-# Optional: For performance optimizations (requires Python 3.9+)
-numpy = {version = "^1.24.0", python = "^3.9"}
+# Optional: For performance optimizations
+numpy = "^1.24.0"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^7.0.0"
