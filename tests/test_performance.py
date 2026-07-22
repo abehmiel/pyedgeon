@@ -188,14 +188,17 @@ class TestScalability:
             p.get_fontsize()
             p.draw_frame()
 
-            start = time.time()
+            start = time.perf_counter()
             p.stamp()
-            elapsed = time.time() - start
+            elapsed = time.perf_counter() - start
 
             times.append(elapsed)
 
-        # Stamping should scale linearly with rotations
-        assert times[-1] < times[0] * (rotation_counts[-1] / rotation_counts[0]) * 2
+        # Stamping should scale linearly with rotations. Floor the baseline:
+        # stamp() can finish below the clock resolution (time.time() reads 0.0 on
+        # Windows), collapsing the RHS to 0 and failing spuriously.
+        baseline = max(times[0], 1e-4)
+        assert times[-1] < baseline * (rotation_counts[-1] / rotation_counts[0]) * 2
 
 
 class TestNestedLoopPerformance:
